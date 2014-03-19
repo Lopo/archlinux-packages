@@ -1,0 +1,46 @@
+# Maintainer: Jonas Heinrich <onny@project-insnaity.org>
+# Contributor: Massimiliano Torromeo <massimiliano.torromeo@gmail.com> 
+# Contributor: Jonas Heinrich <onny@project-insnaity.org>
+# Contributor: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
+
+pkgname=gitlab-shell
+pkgver=1.8.0
+pkgrel=5
+pkgdesc="Self hosted Git management software. (shell daemon)"
+arch=('any')
+url="https://gitlab.com/gitlab-org/gitlab-shell/"
+license=('MIT')
+depends=('ruby>=1.9' 'redis' 'git')
+makedepends=('sudo')
+options=('!strip')
+
+install=gitlab-shell.install
+backup=('etc/webapps/gitlab/shell.yml')
+source=("${pkgname}-${pkgver}.tar.gz::https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz?ref=v${pkgver}")
+sha512sums=('ae334ba87d4ec373ce7fd1c5f4a8b9dbf8613d7da192bb3219f1df954e72ec389fd36b1419e2bc4dd1e1503ca096ae7131b1388c1a77508c74243d23d4203996')
+_homedir=/var/lib/gitlab
+_datadir=/usr/share/gitlab-shell
+
+package() {
+	install -d \
+		"${pkgdir}${_datadir}" \
+		"${pkgdir}${_homedir}" \
+		"${pkgdir}/etc/webapps/gitlab"
+
+	cd "${srcdir}/${pkgname}.git"
+
+	sed -e 's|user: git|user: gitlab|' \
+		-e "s|/home/git/repositories|${_homedir}/repositories|" \
+		-e "s|/home/git|${_homedir}|" \
+		config.yml.example > "${pkgdir}/etc/webapps/gitlab/shell.yml"
+	ln -fs /etc/webapps/gitlab/shell.yml "${pkgdir}${datadir}/config.yml"
+	
+	cp -a VERSION bin hooks lib spec support "${pkgdir}${_datadir}"
+	ln -fs /usr/share/gitlab-shell ${pkgdir}/${_homedir}/
+	
+	install -dm700 "${pkgdir}${_homedir}/.ssh"
+	install -dm770 "${pkgdir}${_homedir}/"{repositories,satellites}
+	
+	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+}

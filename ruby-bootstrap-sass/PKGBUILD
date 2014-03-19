@@ -1,0 +1,24 @@
+# Contributor: Madalin Ignisca <madalin.ignisca@gmail.com>
+# Maintainer: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
+
+_pkgname=bootstrap-sass
+pkgname=ruby-${_pkgname}
+pkgver=3.1.1.0
+pkgrel=1
+pkgdesc='Official Sass port of Bootstrap'
+arch=('any')
+url='http://getbootstrap.com/css/#sass'
+license=("MIT")
+depends=('ruby-sass')
+makedepends=("rubygems")
+optdepends=("ruby-compass")
+source=("http://gems.rubyforge.org/gems/${_pkgname}-${pkgver}.gem")
+noextract=("${_pkgname}-${pkgver}.gem")
+options=(!strip)
+sha512sums=('bc093a5deb890d9247d5b673d6ad709d759f121bbf14187b5e56f762b13d0d4567f7b2a95f2174ef22c31ff350de38e53b98b25533f9bffa79dab6eb3d59c34d')
+
+build() {
+	local _gemdir="$(ruby -rubygems -e'puts Gem.default_dir')"
+	gem install --no-user-install --ignore-dependencies -i "${pkgdir}$_gemdir" ${_pkgname}-$pkgver.gem -n "${pkgdir}/usr/bin" || return 1
+	install -Dm644 "${pkgdir}${_gemdir}/gems/$_pkgname-$pkgver/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

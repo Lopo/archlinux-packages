@@ -1,0 +1,69 @@
+# Maintainer: Pavol Hluchy (Lopo) <lopo at losys dot eu>
+
+_bundle='cpp'
+pkgname="netbeans-${_bundle}-nightly"
+pkgver=latest
+pkgrel=2
+pkgdesc="Netbeans IDE for C/C++"
+license=('CDDL')
+arch=('any')
+url="http://netbeans.org"
+depends=('java-environment' 'ttf-font' 'libxtst' 'giflib' 'atk')
+makedepends=('gendesk' 'setconf')
+optdepends=('lib32-glibc')
+backup=("usr/share/$pkgname/etc/netbeans.conf")
+install="netbeans.install"
+options=(!strip)
+_webroot="http://bits.netbeans.org/download/trunk/nightly/latest"
+
+prepare() {
+	cd "${SRCDEST}"
+
+	download_file "${_webroot}/js/build_info.js"
+	download_file "${_webroot}/js/files.js"
+
+	_zipname=`grep -e '^build_info\.ZIP_FILES_PREFIX\s' build_info.js \
+			| awk 'BEGIN {FPAT="\".+\""} {gsub(/\"/, "", $NF); print}'`
+	_file="${_zipname}-${_bundle}.zip"
+	_md5=`grep "zip/${_file}" files.js \
+		| awk 'BEGIN {FPAT="\"[0-9a-z]+\""} {gsub(/\"/, "", $NF); print}'`
+
+	download_file "${_webroot}/zip/${_file}"
+
+	cd "$srcdir"
+
+	msg "$(gettext "Validating source files with %s...")" "md5sums"
+	file="$(get_filename "${_file}")"
+	printf "%s" "    $file ... " >&2
+	local _realsum="$(openssl dgst -md5 "${_file}")"
+	if [ "${_md5}" != "${_realsum##* }" ]; then
+		printf -- "$(gettext "FAILED")\n" >&2
+		return 1
+	else
+		printf -- "$(gettext "Passed")\n" >&2
+	fi
+
+	extract_file "${_file}"
+}
+
+build() {
+	msg2 "cleanup OS specific files"
+	rm $(find -name '*\.exe' -or -name '*\.bat' -or -name '*\.dll')
+	rm -r $(find -name 'MacOSX*' -or -name 'Windows*' -or -name 'SunOS*' -or -name 'FreeBSD*')
+	rm -r $(find -name 'hpux*' -or -name 'mac*' -or -name 'solaris*' -or -name 'windows*')
+
+	gendesk -n --pkgname "$pkgname" --pkgdesc "$pkgdesc"
+	setconf "netbeans/bin/netbeans" basedir "/usr/share/$pkgname"
+}
+
+package() {
+	cd netbeans
+
+	mkdir -p "$pkgdir"/usr/{bin,share/applications}
+	cp -r "../netbeans" "$pkgdir/usr/share/$pkgname"
+	install -Dm644 "../$pkgname.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
+	install -Dm644 "nb/netbeans.png" "$pkgdir/usr/share/pixmaps/$pkgname.png"
+	ln -fs "/usr/share/$pkgname/bin/netbeans" "$pkgdir/usr/bin/$pkgname"
+}
+
+# vim:set ts=4 sw=4 ai:
