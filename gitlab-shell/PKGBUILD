@@ -4,20 +4,19 @@
 # Contributor: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
 
 pkgname=gitlab-shell
-pkgver=1.8.0
-pkgrel=5
+pkgver=1.9.1
+pkgrel=1
 pkgdesc="Self hosted Git management software. (shell daemon)"
 arch=('any')
 url="https://gitlab.com/gitlab-org/gitlab-shell/"
 license=('MIT')
 depends=('ruby>=1.9' 'redis' 'git')
-makedepends=('sudo')
 options=('!strip')
 
 install=gitlab-shell.install
 backup=('etc/webapps/gitlab/shell.yml')
 source=("${pkgname}-${pkgver}.tar.gz::https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz?ref=v${pkgver}")
-sha512sums=('ae334ba87d4ec373ce7fd1c5f4a8b9dbf8613d7da192bb3219f1df954e72ec389fd36b1419e2bc4dd1e1503ca096ae7131b1388c1a77508c74243d23d4203996')
+sha512sums=('2b20be959e803e0483302ba6b4e68cd53304167f9ceece2da02c0c16ad0d886df2d64423309217291300032293ef3f9cf4592b72c4622804463c74183ba0614d')
 _homedir=/var/lib/gitlab
 _datadir=/usr/share/gitlab-shell
 
