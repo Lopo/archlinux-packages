@@ -1,7 +1,6 @@
 # Contributor: Jonas Heinrich <onny@project-insanity.org>
 # Contributor: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
-# Contributor: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
-# Maintainer: Jonas Heinrich <onny@project-insanity.org>
+# Maintainer: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
 
 pkgname=gitlab
 pkgver=6.7.2
