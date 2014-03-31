@@ -16,7 +16,7 @@ options=('!strip')
 install=gitlab-shell.install
 backup=('etc/webapps/gitlab/shell.yml')
 source=("${pkgname}-${pkgver}.tar.gz::https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz?ref=v${pkgver}")
-sha512sums=('2b20be959e803e0483302ba6b4e68cd53304167f9ceece2da02c0c16ad0d886df2d64423309217291300032293ef3f9cf4592b72c4622804463c74183ba0614d')
+sha512sums=('0810210df59859f371d624f03292f6f04e95dfe95cb885864eeab8221ca7af04a3e4e464590dc7d294477d842340217b7c2e654b218e825780fb569041082266')
 _homedir=/var/lib/gitlab
 _datadir=/usr/share/gitlab-shell
 
