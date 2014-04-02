@@ -4,7 +4,7 @@
 
 pkgname=gitlab
 pkgver=6.7.2
-pkgrel=7
+pkgrel=8
 pkgdesc="Project management and code hosting application"
 arch=('any')
 url="http://gitlab.org/gitlab-ce"
@@ -63,6 +63,7 @@ options=('!strip')
 _homedir='/var/lib/gitlab'
 _datadir='/usr/share/webapps/gitlab'
 _wo=()
+_srcdir='gitlabhq-6.7.2'
 
 prepare() {
 	if [[ `pacman -T libmariadbclient` != '' ]]; then
@@ -77,7 +78,7 @@ prepare() {
 		return 1
 	fi
 
-	cd "${srcdir}/gitlab-ce.git"
+	cd "${srcdir}/${_srcdir}"
 
 	# Patching config files:
 	sed -e "s|# user: git|user: gitlab|" \
@@ -94,16 +95,16 @@ prepare() {
 }
 
 build() {
-	cd "${srcdir}/gitlab-ce.git"
+	cd "${srcdir}/${_srcdir}"
 	msg "Fetching bundled gems..."
 	# Gems will be installed into vendor/bundle
 	bundle install --no-cache --no-prune --deployment --without development test aws ${_wo[@]}
 }
 
 package() {
-	cd "${srcdir}/gitlab-ce.git"
+	cd "${srcdir}/${_srcdir}"
 	install -d "${pkgdir}/usr/share/webapps"
-	cp -r "${srcdir}/gitlab-ce.git" "${pkgdir}${_datadir}"
+	cp -r "${srcdir}/${_srcdir}" "${pkgdir}${_datadir}"
 
 	# Creating directories
 	install -d \
