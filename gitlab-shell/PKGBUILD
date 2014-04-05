@@ -4,7 +4,7 @@
 # Contributor: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
 
 pkgname=gitlab-shell
-pkgver=1.9.1
+pkgver=1.9.3
 pkgrel=1
 pkgdesc="Self hosted Git management software. (shell daemon)"
 arch=('any')
@@ -15,10 +15,12 @@ options=('!strip')
 
 install=gitlab-shell.install
 backup=('etc/webapps/gitlab/shell.yml')
-source=("${pkgname}-${pkgver}.tar.gz::https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz?ref=v${pkgver}")
-sha512sums=('0810210df59859f371d624f03292f6f04e95dfe95cb885864eeab8221ca7af04a3e4e464590dc7d294477d842340217b7c2e654b218e825780fb569041082266')
+#source=("${pkgname}-${pkgver}.tar.gz::https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz?ref=v${pkgver}")
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/gitlabhq/gitlab-shell/archive/v${pkgver}.tar.gz")
+sha512sums=('4d14e731c865528650b134e493ce617b24971a927931c648253f9c3614d72eb21533f63984cb7cfc38a0201e3dfec3c2f5f57d6bd29fe791689548eecd8e9c3b')
 _homedir=/var/lib/gitlab
 _datadir=/usr/share/gitlab-shell
+_srcdir="gitlab-shell-${pkgver}"
 
 package() {
 	install -d \
@@ -26,7 +28,7 @@ package() {
 		"${pkgdir}${_homedir}" \
 		"${pkgdir}/etc/webapps/gitlab"
 
-	cd "${srcdir}/${pkgname}.git"
+	cd "${srcdir}/${_srcdir}"
 
 	sed -e 's|user: git|user: gitlab|' \
 		-e "s|/home/git/repositories|${_homedir}/repositories|" \
