@@ -116,7 +116,6 @@ package() {
 	# Creating directories
 	install -d \
 		"${pkgdir}/etc/webapps/gitlab" \
-		"${pkgdir}/usr/share/webapps" \
 		"${pkgdir}/usr/share/doc/${pkgname}" \
 		"${pkgdir}${_homedir}/www" \
 		"${pkgdir}${_datadir}/www" \
@@ -139,7 +138,7 @@ package() {
 
 	# Install systemd service files
 	for _file in gitlab.target gitlab-unicorn.service gitlab-sidekiq.service; do
-		install -Dm0755 "${srcdir}/${_file}" "${pkgdir}/usr/lib/systemd/system/${_file}"
+		install -Dm0644 "${srcdir}/${_file}" "${pkgdir}/usr/lib/systemd/system/${_file}"
 	done
 
 	install -Dm644 "${srcdir}/gitlab.tmpfiles.d" "${pkgdir}/usr/lib/tmpfiles.d/gitlab.conf"
