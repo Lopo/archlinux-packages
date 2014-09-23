@@ -1,10 +1,10 @@
-# Maintainer: Jonas Heinrich <onny@project-insnaity.org>
+# Maintainer: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
 # Contributor: Massimiliano Torromeo <massimiliano.torromeo@gmail.com> 
 # Contributor: Jonas Heinrich <onny@project-insnaity.org>
-# Contributor: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
+# Contributor: Lee Watson <aur@revthefox.co.uk>
 
 pkgname=gitlab-shell
-pkgver=1.9.7
+pkgver=2.0.0
 pkgrel=1
 pkgdesc="Self hosted Git management software. (shell daemon)"
 arch=('any')
@@ -15,11 +15,10 @@ options=('!strip')
 
 install=gitlab-shell.install
 backup=('etc/webapps/gitlab-shell/config.yml')
-#source=("${pkgname}-${pkgver}.tar.gz::https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz?ref=v${pkgver}")
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/gitlabhq/gitlab-shell/archive/v${pkgver}.tar.gz")
-sha512sums=('b1382864af5e63d57b44d41f90c7e5daf9c91b7fc100584e1fcc1bbc6088e2c104099260c6eacf2a9d4c07e6832e9107f73f46567d3077404373a960c543841e')
+sha512sums=('87467b12b5e41f8265e9eb1ab361b80d1133887925a8555820902d7c0cc9e65ce5342de283b50c4104796be50db4fc9338cdbc2c5d340614dfd7c961c95a280d')
 _homedir=/var/lib/gitlab
-_datadir=/usr/share/gitlab-shell
+_datadir=/usr/share/webapps/gitlab-shell
 _srcdir="gitlab-shell-${pkgver}"
 
 package() {
@@ -37,7 +36,7 @@ package() {
 	ln -fs /etc/webapps/gitlab-shell/config.yml "${pkgdir}${_datadir}/config.yml"
 
 	cp -a VERSION bin hooks lib spec support "${pkgdir}${_datadir}"
-	ln -fs /usr/share/gitlab-shell ${pkgdir}/${_homedir}/
+	ln -fs ${_datadir} ${pkgdir}/${_homedir}/
 
 	install -dm700 "${pkgdir}${_homedir}/.ssh"
 	install -dm770 "${pkgdir}${_homedir}/"{repositories,satellites}
@@ -45,3 +44,5 @@ package() {
 	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 	install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
 }
+
+# vim:set ts=4 sw=4 et:
