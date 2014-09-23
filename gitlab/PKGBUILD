@@ -4,7 +4,7 @@
 
 pkgname=gitlab
 pkgver=7.3.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Project management and code hosting application"
 arch=('i686' 'x86_64')
 url="http://gitlab.org/gitlab-ce"
@@ -98,7 +98,7 @@ prepare() {
 	sed -e "s|# user: git|user: gitlab|" \
 		-e "s|/home/git/repositories|${_homedir}/repositories|" \
 		-e "s|/home/git/gitlab-satellites|${_homedir}/satellites|" \
-		-e "s|/home/git/gitlab-shell|/usr/share/gitlab-shell|" \
+		-e "s|/home/git/gitlab-shell|/usr/share/webapps/gitlab-shell|" \
 		config/gitlab.yml.example > config/gitlab.yml
 	sed -e "s|/home/git/gitlab/tmp/.*/|/var/run/gitlab/|g" \
 		-e "s|/home/git/gitlab|${_datadir}|g" \
