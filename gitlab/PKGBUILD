@@ -3,7 +3,7 @@
 # Maintainer: Pavol (Lopo) Hluchy <lopo AT losys DOT eu>
 
 pkgname=gitlab
-pkgver=7.4.1
+pkgver=7.4.2
 pkgrel=1
 pkgdesc="Project management and code hosting application"
 arch=('i686' 'x86_64')
@@ -134,6 +134,7 @@ package() {
 		"${pkgdir}/etc/webapps/gitlab" \
 		"${pkgdir}/usr/share/doc/${pkgname}" \
 		"${pkgdir}${_homedir}/www" \
+		"${pkgdir}${_homedir}/satellites" \
 		"${pkgdir}${_datadir}/www" \
 		"${pkgdir}${_datadir}/public/uploads"
 	ln -fs /run/gitlab "${pkgdir}${_homedir}/pids"
