@@ -7,7 +7,7 @@
 
 pkgname=gitlab-shell
 pkgver=2.2.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Self hosted Git management software. (shell daemon)"
 arch=('any')
 url="https://gitlab.com/gitlab-org/gitlab-shell/"

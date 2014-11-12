@@ -13,6 +13,7 @@ fix_perms() {
 
 generate_secret() {
 	hexdump -v -n 64 -e '1/1 "%02x"' /dev/urandom > "${_etcdir}/secret"
+	ln -fs "${_etcdir}/secret" "${pkgdir}${_datadir}/.gitlab_shell_secret"
 }
 
 post_install() {
@@ -20,7 +21,6 @@ post_install() {
 	useradd -d "${_homedir}" -g gitlab -s "${_datadir}/bin/gitlab-shell" gitlab
 
 	generate_secret
-	ln -fs "${_etcdir}/secret" "${pkgdir}${_datadir}/.gitlab_shell_secret"
 
 	fix_perms
 	sudo -u gitlab -H git config --global user.name  "GitLab"
@@ -32,11 +32,13 @@ pre_upgrade() {
 		mkdir -p "${_etcdir}"
 		cp /etc/webapps/gitlab/shell.yml ${_etcdir}/config.yml
 	fi
-	if [ \( -f ${_datadir}/.gitlab_shell_secret \) -a \( ! -h ${_datadir}/.gitlab_shell_secret \) -a \( -s ${_datadir}/.gitlab_shell_secret \) ]; then
-		mv "${_datadir}/.gitlab_shell_secret" "${_etcdir}/secret"
-	else
-		rm -f "${_datadir}/.gitlab_shell_secret"
-		generate_secret
+	if [ \( ! -f "${_etcdir}/secret" \) ]; then
+		if [ \( -f ${_datadir}/.gitlab_shell_secret \) -a \( ! -h ${_datadir}/.gitlab_shell_secret \) -a \( -s ${_datadir}/.gitlab_shell_secret \) ]; then
+			mv "${_datadir}/.gitlab_shell_secret" "${_etcdir}/secret"
+		else
+			rm -f "${_datadir}/.gitlab_shell_secret"
+			generate_secret
+		fi
 	fi
 }
 
