@@ -35,6 +35,7 @@ pre_upgrade() {
 	if [ \( ! -f "${_etcdir}/secret" \) ]; then
 		if [ \( -f ${_datadir}/.gitlab_shell_secret \) -a \( ! -h ${_datadir}/.gitlab_shell_secret \) -a \( -s ${_datadir}/.gitlab_shell_secret \) ]; then
 			mv "${_datadir}/.gitlab_shell_secret" "${_etcdir}/secret"
+			ln -fs "${_etcdir}/secret" "${pkgdir}${_datadir}/.gitlab_shell_secret"
 		else
 			rm -f "${_datadir}/.gitlab_shell_secret"
 			generate_secret
