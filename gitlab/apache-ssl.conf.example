@@ -2,13 +2,39 @@
 #Note this config assumes unicorn is listening on default port 8080.
 #Module dependencies
 #  mod_rewrite
+#  mod_ssl
 #  mod_proxy
 #  mod_proxy_http
+#  mod_headers
+
+# This section is only needed if you want to redirect http traffic to https.
+# You can live without it but clients will have to type in https:// to reach gitlab.
 <VirtualHost *:80>
   ServerName gitlab.example.com
   ServerSignature Off
 
+  RewriteEngine on
+  RewriteCond %{HTTPS} !=on
+  RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [NE,R,L]
+</VirtualHost>
+
+<VirtualHost *:443>
+  SSLEngine on
+  #strong encryption ciphers only
+  #see ciphers(1) http://www.openssl.org/docs/apps/ciphers.html
+  SSLCipherSuite !SSLv3:TLSv1:+HIGH:!SSLv2:!MD5:!MEDIUM:!LOW:!EXP:!ADH:!eNULL:!aNULL
+  SSLCertificateFile    /etc/httpd/ssl.crt/gitlab.example.com.crt
+  SSLCertificateKeyFile /etc/httpd/ssl.key/gitlab.example.com.key
+  SSLCACertificateFile  /etc/httpd/ssl.crt/your-ca.crt
+
+  ServerName gitlab.example.com
+  ServerSignature Off
+
   ProxyPreserveHost On
+
+  # Ensure that encoded slashes are not decoded but left in their encoded state.
+  # http://doc.gitlab.com/ce/api/projects.html#get-single-project
+  AllowEncodedSlashes NoDecode
 
   <Location />
     Order deny,allow
@@ -24,6 +50,7 @@
   RewriteEngine on
   RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
   RewriteRule .* http://127.0.0.1:8080%{REQUEST_URI} [P,QSA]
+  RequestHeader set X_FORWARDED_PROTO 'https'
 
   # needed for downloading attachments
   DocumentRoot /usr/share/webapps/gitlab/public
